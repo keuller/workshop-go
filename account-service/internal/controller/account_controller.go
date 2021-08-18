@@ -1,7 +1,6 @@
 package controller
 
 import (
-	"fmt"
 	"log"
 	"net/http"
 
@@ -79,12 +78,5 @@ func (ctrl AccountController) Transfer(res http.ResponseWriter, req *http.Reques
 
 	common.ToJson(res, http.StatusOK, M{
 		"message": "Transfer OK",
-	})
-}
-
-func (ctrl AccountController) Quotation(res http.ResponseWriter, req *http.Request) {
-	val := ctrl.accountService.GetQuotationMsg("BRL", "EUR", 10)
-	common.ToJson(res, http.StatusOK, M{
-		"value": fmt.Sprintf("%.2f", val),
 	})
 }

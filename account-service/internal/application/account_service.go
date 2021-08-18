@@ -141,15 +141,6 @@ func (s AccountService) GetQuotationValue(sourceCurrency, targetCurrency string,
 	return quotation.GetValue()
 }
 
-func (s AccountService) GetQuotationMsg(sourceCurrency, targetCurrency string, value float64) float64 {
-	if sourceCurrency == targetCurrency {
-		return value
-	}
-	quotation := s.exchangeRepository.GetQuotationMsg(sourceCurrency, targetCurrency, value)
-	log.Printf("[DEBUG] quotation: %v \n", quotation)
-	return quotation.GetValue()
-}
-
 func (s AccountService) registerTransaction(account domain.Account, operation int, value float64) {
 	transactionBuilder := domain.NewTransactionBuilder()
 	log.Printf("[DEBUG] registering transaction on account %s of operation %d with value %.2f", account.ID, operation, value)

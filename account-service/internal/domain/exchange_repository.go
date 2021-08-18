@@ -21,5 +21,4 @@ func (q Quotation) GetValue() float64 {
 type IExchangeRepository interface {
 	GetCurrencies() []Currency
 	GetQuotation(from, to string, value float64) Quotation
-	GetQuotationMsg(from, to string, value float64) Quotation
 }

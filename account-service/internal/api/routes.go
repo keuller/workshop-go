@@ -43,7 +43,6 @@ func configureRoutes() *chi.Mux {
 
 	router.Post("/v1/accounts", handleError(accountCtrl.CreateAccountHandler))
 	router.Get("/v1/accounts/{code}/balance", accountCtrl.GetBalanceHandler)
-	router.Get("/v1/accounts/quotation", accountCtrl.Quotation)
 	router.Post("/v1/accounts/deposit", accountCtrl.Deposit)
 	router.Patch("/v1/accounts/transfer", accountCtrl.Transfer)
 	return router
