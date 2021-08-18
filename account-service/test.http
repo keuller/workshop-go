@@ -1,0 +1,40 @@
+PATCH http://localhost:7001/v1/accounts/transfer
+Content-Type: application/json
+
+{
+  "from": "741eaaa2-11ee-4276-be00-01740bb67169",
+  "to": "73969035-cc35-4735-98b7-200dbf2e456e",
+  "value": 5.0
+}
+
+###
+POST http://localhost:7001/v1/accounts/deposit
+Content-Type: application/json
+
+{
+  "account_code": "741eaaa2-11ee-4276-be00-01740bb67169",
+  "value": 25.0
+}
+
+###
+GET http://localhost:7001/v1/accounts/741eaaa2-11ee-4276-be00-01740bb67100/balance
+Accept: application/json
+
+###
+POST http://localhost:7001/v1/accounts
+Content-Type: application/json
+
+{
+  "name": "Jonhnny Cana BRava",
+  "document": "4225870152",
+  "email": "jonhnny.c.brava@test.net",
+  "currency": "EUR",
+  "age": 18
+}
+
+###
+
+GET http://localhost:7005/v1/exchange/quotation?from=USD&to=BRL&val=5.0
+Accept: application/json
+
+{}
