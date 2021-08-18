@@ -1,0 +1,2 @@
+# workshop-go
+Workshop GO
