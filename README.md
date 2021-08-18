@@ -6,6 +6,6 @@ This repo contains the code regarding to workshop GO to the Bolttech's Beta team
 
 ![Clean Architecture](docs/clean-arch-picture.png)
 
-## Challange
+## Our Challenge
 
 ![challenge](docs/workshop-challenge.png)
