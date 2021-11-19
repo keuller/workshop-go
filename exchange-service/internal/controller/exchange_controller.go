@@ -11,11 +11,6 @@ import (
 
 	"github.com/keuller/exchange/internal/application"
 	"github.com/keuller/exchange/internal/domain"
-	"github.com/ugorji/go/codec"
-)
-
-var (
-	msgHandle codec.MsgpackHandle
 )
 
 func GetCurrencies(res http.ResponseWriter, req *http.Request) {
@@ -50,39 +45,6 @@ func GetQuotation(res http.ResponseWriter, req *http.Request) {
 	}
 
 	Json(res, response)
-}
-
-func GetQuotationMsg(res http.ResponseWriter, req *http.Request) {
-	from := strings.ToUpper(req.URL.Query().Get("from"))
-	to := strings.ToUpper(req.URL.Query().Get("to"))
-	value, err := strconv.ParseFloat(req.URL.Query().Get("val"), 32)
-	if sendError(res, err, http.StatusBadRequest) {
-		return
-	}
-
-	quotationSvc := application.NewExchangeService()
-	quotation, err := quotationSvc.Get(from, to, value)
-	if sendError(res, err, http.StatusBadRequest) {
-		return
-	}
-
-	log.Printf("[INFO] get quotation from %s to %s with %.2f", from, to, value)
-	response := QuotationResponse{
-		From:  from,
-		To:    to,
-		Value: fmt.Sprintf("%.2f", quotation.Result),
-	}
-
-	buf := &bytes.Buffer{}
-	enc := codec.NewEncoder(buf, &msgHandle)
-
-	if err := enc.Encode(response); sendError(res, err, http.StatusInternalServerError) {
-		return
-	}
-
-	res.Header().Set("Content-Type", "application/octet-stream")
-	res.WriteHeader(http.StatusOK)
-	res.Write(buf.Bytes())
 }
 
 // Json formats the response to 'application/json' type
