@@ -35,16 +35,7 @@ func handleError(fn operation) http.HandlerFunc {
 func configureRoutes() *chi.Mux {
 	router := chi.NewRouter()
 	setMiddlewares(router)
-
-	accountRepo := repository.NewAccountRepository(infra.Connection())
-	exchangeRepo := repository.NewExchangeRepository()
-	accountSvc := application.NewAccountService(accountRepo, exchangeRepo)
-	accountCtrl := controller.NewAccountController(accountSvc)
-
-	router.Post("/v1/accounts", handleError(accountCtrl.CreateAccountHandler))
-	router.Get("/v1/accounts/{code}/balance", accountCtrl.GetBalanceHandler)
-	router.Post("/v1/accounts/deposit", accountCtrl.Deposit)
-	router.Patch("/v1/accounts/transfer", accountCtrl.Transfer)
+	router.Mount("/v1", v1Routes())
 	return router
 }
 
@@ -54,4 +45,20 @@ func setMiddlewares(mux *chi.Mux) {
 	mux.Use(chimid.Heartbeat("/liveness"))
 	mux.Use(chimid.RequestID)
 	mux.Use(chimid.Timeout(30 * time.Second))
+}
+
+func v1Routes() http.Handler {
+	accountRepo := repository.NewAccountRepository(infra.Connection())
+	exchangeRepo := repository.NewExchangeRepository()
+	accountSvc := application.NewAccountService(accountRepo, exchangeRepo)
+	accountCtrl := controller.NewAccountController(accountSvc)
+
+	v1 := chi.NewRouter()
+
+	v1.Post("/accounts", handleError(accountCtrl.CreateAccountHandler))
+	v1.Get("/accounts/{code}/balance", accountCtrl.GetBalanceHandler)
+	v1.Post("/accounts/deposit", accountCtrl.Deposit)
+	v1.Patch("/accounts/transfer", accountCtrl.Transfer)
+
+	return v1
 }
