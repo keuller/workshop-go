@@ -11,6 +11,5 @@ func main() {
 
 	app := api.New()
 	go app.Start()
-	go app.StartRpc()
 	app.Stop()
 }

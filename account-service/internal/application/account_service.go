@@ -50,10 +50,15 @@ func (s AccountService) GetBalance(code string) BalanceResponse {
 		return BalanceResponse{}
 	}
 
+	lastUpdated := account.CreatedAt
+	if account.UpdatedAt != nil {
+		lastUpdated = *account.UpdatedAt
+	}
+
 	return BalanceResponse{
 		Account:    code,
 		Balance:    account.Balance,
-		LastUpdate: common.DateToStr(account.CreatedAt),
+		LastUpdate: common.DateToStr(lastUpdated),
 	}
 }
 
@@ -72,7 +77,6 @@ func (s AccountService) Deposit(data DepositRequest) error {
 }
 
 func (s AccountService) Transfer(data TransferRequest) error {
-	log.Printf("%v", data)
 	if data.SourceAccount == data.TargetAccount {
 		return errors.New("the accounts must be different")
 	}
@@ -147,6 +151,7 @@ func (s AccountService) registerTransaction(account domain.Account, operation in
 	transaction := transactionBuilder.
 		WithAccount(account).
 		WithOperation(operation).
-		WithValue(value).Build()
+		WithValue(value).
+		Build()
 	s.accountRepository.AddTransaction(transaction)
 }
