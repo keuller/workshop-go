@@ -6,7 +6,6 @@ import (
 	"fmt"
 	"log"
 	"net/http"
-	"net/rpc"
 	"os"
 	"os/signal"
 	"syscall"
@@ -16,25 +15,22 @@ import (
 )
 
 type App struct {
-	server    *http.Server
-	rpcServer rpc.ServerCodec
+	server *http.Server
 }
 
 func New() App {
-	host := infra.GetConfig("host")
-	port := infra.GetConfig("port")
-
+	settings := infra.NewSettings()
 	routes := configureRoutes()
 
 	srv := &http.Server{
-		Addr:         fmt.Sprintf("%s:%s", host, port),
+		Addr:         fmt.Sprintf("%s:%s", settings.Host, settings.Port),
 		Handler:      routes,
 		IdleTimeout:  15 * time.Second,
 		ReadTimeout:  15 * time.Second,
 		WriteTimeout: 15 * time.Second,
 	}
 
-	return App{srv, nil}
+	return App{srv}
 }
 
 func (a App) Start() {
@@ -61,6 +57,4 @@ func (a App) Stop() {
 	}
 	log.Println("[INFO] Server has been stopped.")
 	stop()
-
-	a.rpcServer.Close()
 }

@@ -15,7 +15,6 @@ func configureRoutes() *chi.Mux {
 
 	router.Get("/v1/exchange/currencies", controller.GetCurrencies)
 	router.Get("/v1/exchange/quotation", controller.GetQuotation)
-	router.Get("/v1/exchange/quotation/msg", controller.GetQuotationMsg)
 
 	return router
 }

@@ -7,7 +7,7 @@ import (
 	"github.com/keuller/exchange/internal/application"
 )
 
-func TestQuotationService(t *testing.T) {
+func TestExchangeService(t *testing.T) {
 
 	t.Run("Conversion from USD to BRL", func(it *testing.T) {
 		quotationSvc := application.NewExchangeService()
