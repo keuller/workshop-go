@@ -32,9 +32,3 @@ Content-Type: application/json
   "age": 18
 }
 
-###
-
-GET http://localhost:7005/v1/exchange/quotation?from=USD&to=BRL&val=5.0
-Accept: application/json
-
-{}
