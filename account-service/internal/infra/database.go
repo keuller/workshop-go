@@ -12,7 +12,7 @@ var (
 )
 
 func InitDB() error {
-	dbFile := "./" + GetConfig("db_file")
+	dbFile := "./" + GetConfig().DbFile
 	db, err := gorm.Open(sqlite.Open(dbFile), &gorm.Config{})
 	if err != nil {
 		return err

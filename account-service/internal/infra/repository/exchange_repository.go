@@ -21,7 +21,7 @@ type exchangeRepository struct {
 }
 
 func NewExchangeRepository() domain.IExchangeRepository {
-	exchangeUrl := infra.GetConfig("exchange_url")
+	exchangeUrl := infra.GetConfig().ExchangeUrl
 	cached := make([]domain.Currency, 0)
 	return &exchangeRepository{exchangeUrl, cached}
 }

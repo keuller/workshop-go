@@ -3,35 +3,40 @@ package infra
 import (
 	"log"
 
-	"github.com/spf13/viper"
+	"github.com/golobby/config/v3"
+	"github.com/golobby/config/v3/pkg/feeder"
 )
 
 var (
-	cfg      *viper.Viper
-	isLoaded bool = false
+	settings Settings = Settings{}
+	isLoaded bool     = false
 )
+
+type Settings struct {
+	Host        string
+	Port        string
+	ExchangeUrl string
+	DbFile      string
+}
 
 func _loadConfigFile() {
 	log.Println("[INFO] Loading configuration file.")
-	cfg = viper.New()
-	cfg.AddConfigPath("./config")
-	cfg.SetConfigName("server")
-	cfg.SetConfigType("json")
+	jsonFeed := feeder.Json{Path: "config/server.json"}
+	c := config.New()
+	c.AddFeeder(jsonFeed).AddStruct(&settings)
+	if err := c.Feed(); err != nil {
+		log.Println("[ERROR] fail to load settings file -", err.Error())
+	}
 }
 
 // GetConfig read a key configuration in 'server.json' file
-func GetConfig(key string) string {
+func GetConfig() Settings {
 	if isLoaded {
-		return cfg.Get(key).(string)
+		return settings
 	}
 
 	_loadConfigFile()
 
-	if err := cfg.ReadInConfig(); err != nil {
-		log.Printf("[ERROR] Fail to read configuration file: %s \n", err.Error())
-		return ""
-	}
-
 	isLoaded = true
-	return cfg.Get(key).(string)
+	return settings
 }

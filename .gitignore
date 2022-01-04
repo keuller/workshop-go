@@ -2,3 +2,4 @@
 *.out
 account
 exchange
+*.db

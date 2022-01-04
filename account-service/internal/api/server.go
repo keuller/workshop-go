@@ -19,8 +19,8 @@ type App struct {
 }
 
 func New() App {
-	host := infra.GetConfig("host")
-	port := infra.GetConfig("port")
+	host := infra.GetConfig().Host
+	port := infra.GetConfig().Port
 
 	routes := configureRoutes()
 
