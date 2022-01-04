@@ -8,9 +8,9 @@ type Currency struct {
 }
 
 type Quotation struct {
-	From  string `json:"from" codec:"from"`
-	To    string `json:"to" codec:"to"`
-	Value string `json:"value" codec:"value"`
+	From  string `json:"from"`
+	To    string `json:"to"`
+	Value string `json:"value"`
 }
 
 func (q Quotation) GetValue() float64 {
