@@ -1,4 +1,4 @@
-package application
+package domain
 
 import (
 	"errors"
@@ -8,16 +8,15 @@ import (
 	"github.com/go-playground/validator/v10"
 
 	"github.com/keuller/account/internal/common"
-	"github.com/keuller/account/internal/domain"
 )
 
 type AccountService struct {
 	validate           *validator.Validate
-	accountRepository  domain.IAccountRepository
-	exchangeRepository domain.IExchangeRepository
+	accountRepository  IAccountRepository
+	exchangeRepository IExchangeRepository
 }
 
-func NewAccountService(repo domain.IAccountRepository, exchange domain.IExchangeRepository) AccountService {
+func NewAccountService(repo IAccountRepository, exchange IExchangeRepository) AccountService {
 	validate := validator.New()
 	return AccountService{validate, repo, exchange}
 }
@@ -31,7 +30,7 @@ func (s AccountService) CreateAccount(data AccountRequest) (string, error) {
 		return "", common.BusinessFailure("Currency is invalid.", nil)
 	}
 
-	builder := domain.NewAccountBuilder()
+	builder := NewAccountBuilder()
 	account := builder.WithBalance(0.0).
 		WithCurrency(data.Currency).
 		Build()
@@ -69,7 +68,7 @@ func (s AccountService) Deposit(data DepositRequest) error {
 		return errors.New("invalid account")
 	}
 
-	if err := s.updateBalance(account, data.Value, domain.CREDIT); err != nil {
+	if err := s.updateBalance(account, data.Value, CREDIT); err != nil {
 		return err
 	}
 
@@ -100,12 +99,12 @@ func (s AccountService) Transfer(data TransferRequest) error {
 	value := s.GetQuotationValue(source.Currency, target.Currency, data.Value)
 
 	// debit from source account
-	if err := s.updateBalance(source, data.Value, domain.DEBIT); err != nil {
+	if err := s.updateBalance(source, data.Value, DEBIT); err != nil {
 		return err
 	}
 
 	// credit on target account
-	if err := s.updateBalance(target, value, domain.CREDIT); err != nil {
+	if err := s.updateBalance(target, value, CREDIT); err != nil {
 		return err
 	}
 
@@ -122,9 +121,9 @@ func (s AccountService) isValidCurrency(value string) bool {
 	return false
 }
 
-func (s AccountService) updateBalance(account domain.Account, value float64, operation int) error {
+func (s AccountService) updateBalance(account Account, value float64, operation int) error {
 	newBalance := account.Balance + value
-	if operation == domain.DEBIT {
+	if operation == DEBIT {
 		newBalance = account.Balance - value
 	}
 
@@ -145,8 +144,8 @@ func (s AccountService) GetQuotationValue(sourceCurrency, targetCurrency string,
 	return quotation.GetValue()
 }
 
-func (s AccountService) registerTransaction(account domain.Account, operation int, value float64) {
-	transactionBuilder := domain.NewTransactionBuilder()
+func (s AccountService) registerTransaction(account Account, operation int, value float64) {
+	transactionBuilder := NewTransactionBuilder()
 	log.Printf("[DEBUG] registering transaction on account %s of operation %d with value %.2f", account.ID, operation, value)
 	transaction := transactionBuilder.
 		WithAccount(account).

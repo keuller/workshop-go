@@ -11,7 +11,7 @@ import (
 
 	"github.com/keuller/account/internal/application"
 	"github.com/keuller/account/internal/common"
-	"github.com/keuller/account/internal/controller"
+	"github.com/keuller/account/internal/domain"
 	"github.com/keuller/account/internal/infra"
 	"github.com/keuller/account/internal/infra/repository"
 )
@@ -50,8 +50,8 @@ func setMiddlewares(mux *chi.Mux) {
 func v1Routes() http.Handler {
 	accountRepo := repository.NewAccountRepository(infra.Connection())
 	exchangeRepo := repository.NewExchangeRepository()
-	accountSvc := application.NewAccountService(accountRepo, exchangeRepo)
-	accountCtrl := controller.NewAccountController(accountSvc)
+	accountSvc := domain.NewAccountService(accountRepo, exchangeRepo)
+	accountCtrl := application.NewAccountController(accountSvc)
 
 	v1 := chi.NewRouter()
 

@@ -3,7 +3,7 @@ package application
 import (
 	"testing"
 
-	"github.com/keuller/account/internal/application"
+	"github.com/keuller/account/internal/domain"
 	"github.com/keuller/account/test/mock"
 )
 
@@ -12,8 +12,8 @@ func TestAccountServiceSuite(t *testing.T) {
 	exchangeRepo := mock.NewExchangeRepositoryMock()
 
 	t.Run("Create a valid account", func(it *testing.T) {
-		service := application.NewAccountService(accountRepo, exchangeRepo)
-		data := application.AccountRequest{
+		service := domain.NewAccountService(accountRepo, exchangeRepo)
+		data := domain.AccountRequest{
 			Name:     "John Doe",
 			Document: "8546320",
 			Email:    "john.doe@outlook.com",
@@ -31,8 +31,8 @@ func TestAccountServiceSuite(t *testing.T) {
 	})
 
 	t.Run("Try to create an account with invalid age", func(it *testing.T) {
-		service := application.NewAccountService(accountRepo, exchangeRepo)
-		data := application.AccountRequest{
+		service := domain.NewAccountService(accountRepo, exchangeRepo)
+		data := domain.AccountRequest{
 			Name:     "John Doe",
 			Document: "8546320",
 			Email:    "john.doe@outlook.com",
@@ -52,8 +52,8 @@ func TestAccountServiceSuite(t *testing.T) {
 	})
 
 	t.Run("Try to create an account with invalid currency", func(it *testing.T) {
-		service := application.NewAccountService(accountRepo, exchangeRepo)
-		data := application.AccountRequest{
+		service := domain.NewAccountService(accountRepo, exchangeRepo)
+		data := domain.AccountRequest{
 			Name:     "John Doe",
 			Email:    "john.doe@outlook.com",
 			Currency: "CAD",
@@ -67,7 +67,7 @@ func TestAccountServiceSuite(t *testing.T) {
 	})
 
 	t.Run("Get Balance", func(it *testing.T) {
-		service := application.NewAccountService(accountRepo, exchangeRepo)
+		service := domain.NewAccountService(accountRepo, exchangeRepo)
 		response := service.GetBalance("8695230152")
 		if response.Balance != 1.0 && response.Account != "73089a35-3b88-40df-ab27-64df5e58e343" {
 			it.Fatal("failed to get balence from account")
@@ -75,8 +75,8 @@ func TestAccountServiceSuite(t *testing.T) {
 	})
 
 	t.Run("Account deposit", func(it *testing.T) {
-		service := application.NewAccountService(accountRepo, exchangeRepo)
-		data := application.DepositRequest{
+		service := domain.NewAccountService(accountRepo, exchangeRepo)
+		data := domain.DepositRequest{
 			Account: "8695230152",
 			Value:   10.0,
 		}

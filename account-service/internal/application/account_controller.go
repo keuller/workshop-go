@@ -1,4 +1,4 @@
-package controller
+package application
 
 import (
 	"log"
@@ -6,22 +6,22 @@ import (
 
 	"github.com/go-chi/chi/v5"
 
-	"github.com/keuller/account/internal/application"
 	"github.com/keuller/account/internal/common"
+	"github.com/keuller/account/internal/domain"
 )
 
 type M map[string]string
 
 type AccountController struct {
-	accountService application.AccountService
+	accountService domain.AccountService
 }
 
-func NewAccountController(svc application.AccountService) AccountController {
+func NewAccountController(svc domain.AccountService) AccountController {
 	return AccountController{svc}
 }
 
 func (ctrl AccountController) CreateAccountHandler(res http.ResponseWriter, req *http.Request) error {
-	var data application.AccountRequest
+	var data domain.AccountRequest
 	if err := common.BindJson(req.Body, &data); err != nil {
 		return err
 	}
@@ -47,7 +47,7 @@ func (ctrl AccountController) GetBalanceHandler(res http.ResponseWriter, req *ht
 }
 
 func (ctrl AccountController) Deposit(res http.ResponseWriter, req *http.Request) {
-	var data application.DepositRequest
+	var data domain.DepositRequest
 	if err := common.BindJson(req.Body, &data); err != nil {
 		http.Error(res, err.Error(), http.StatusBadRequest)
 		return
@@ -64,7 +64,7 @@ func (ctrl AccountController) Deposit(res http.ResponseWriter, req *http.Request
 }
 
 func (ctrl AccountController) Transfer(res http.ResponseWriter, req *http.Request) {
-	var data application.TransferRequest
+	var data domain.TransferRequest
 	if err := common.BindJson(req.Body, &data); err != nil {
 		log.Printf("[ERROR] fail to serialize JSON data, reason: %s \n", err.Error())
 		http.Error(res, err.Error(), http.StatusBadRequest)
